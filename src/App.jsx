@@ -33,9 +33,18 @@ export default function SketchML() {
   const wsRef = useRef(null);
   const connectionId = useRef(`conn_${Date.now()}`);
 
+  // Backend URLs - Production vs Development
+  const BACKEND_URL = import.meta.env.PROD 
+  ? 'https://sketchml-production.up.railway.app'
+  : 'http://localhost:8000';
+
+  const WS_URL = import.meta.env.PROD
+  ? 'wss://sketchml-production.up.railway.app'
+  : 'ws://localhost:8000';
+
   // WebSocket connection
   useEffect(() => {
-    const ws = new WebSocket(`ws://localhost:8000/ws/${connectionId.current}`);
+    const ws = new WebSocket(`${WS_URL}/ws/${connectionId.current}`);
     
     ws.onopen = () => {
       setIsConnected(true);
