@@ -1,6 +1,8 @@
 import React, { useState, useEffect, useRef } from 'react';
 import * as d3 from 'd3';
 
+const NEXT_PUBLIC_API_URL = 'https://sketchml-production.up.railway.app';
+
 const ALGORITHMS = {
   linear_regression: { name: 'Linear Regression', type: 'regression' },
   logistic_regression: { name: 'Logistic Regression', type: 'classification' },
@@ -36,7 +38,7 @@ export default function SketchML() {
   // Backend URLs - Production vs Development
   const getBackendUrl = () => {
     if (typeof window !== 'undefined' && window.location.hostname === 'sketchml.vercel.app') {
-      return 'https://sketchml-production.up.railway.app';
+      return NEXT_PUBLIC_API_URL;
     }
     return 'http://localhost:8000';
   };
