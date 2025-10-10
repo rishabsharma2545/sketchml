@@ -34,17 +34,23 @@ export default function SketchML() {
   const connectionId = useRef(`conn_${Date.now()}`);
 
   // Backend URLs - Production vs Development
-  const BACKEND_URL = import.meta.env.PROD 
-  ? 'https://sketchml-production.up.railway.app'
-  : 'http://localhost:8000';
+  const getBackendUrl = () => {
+    if (typeof window !== 'undefined' && window.location.hostname === 'sketchml.vercel.app') {
+      return 'https://sketchml-production.up.railway.app';
+    }
+    return 'http://localhost:8000';
+  };
 
-  const WS_URL = import.meta.env.PROD
-  ? 'wss://sketchml-production.up.railway.app'
-  : 'ws://localhost:8000';
+  const getWsUrl = () => {
+    if (typeof window !== 'undefined' && window.location.hostname === 'sketchml.vercel.app') {
+      return 'wss://sketchml-production.up.railway.app';
+    }
+    return 'ws://localhost:8000';
+  };
 
   // WebSocket connection
   useEffect(() => {
-    const ws = new WebSocket(`${WS_URL}/ws/${connectionId.current}`);
+    const ws = new WebSocket(`${getWsUrl()}/ws/${connectionId.current}`);
     
     ws.onopen = () => {
       setIsConnected(true);
@@ -56,6 +62,11 @@ export default function SketchML() {
       if (!data.error) {
         setModelData(data);
       }
+    };
+    
+    ws.onerror = (error) => {
+      console.error('WebSocket error:', error);
+      setIsConnected(false);
     };
     
     ws.onclose = () => {
@@ -274,7 +285,7 @@ export default function SketchML() {
     if (!testPoint) return;
     
     try {
-      const response = await fetch(`${BACKEND_URL}/predict/${connectionId.current}`, {
+      const response = await fetch(`${getBackendUrl()}/predict/${connectionId.current}`, {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify(testPoint)
