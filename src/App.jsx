@@ -274,7 +274,7 @@ export default function SketchML() {
     if (!testPoint) return;
     
     try {
-      const response = await fetch(`http://localhost:8000/predict/${connectionId.current}`, {
+      const response = await fetch(`${BACKEND_URL}/predict/${connectionId.current}`, {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify(testPoint)
